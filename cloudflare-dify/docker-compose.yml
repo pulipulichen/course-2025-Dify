@@ -1,5 +1,5 @@
 services:
   cloudflare_dify:
-    image: pudding/docker-app:docker-cloudflare-tunnel-app-20250425.045953
+    image: pudding/docker-app:docker-cloudflare-tunnel-app-20250425.052817
     environment:
       - TARGET_URL=http://nginx
