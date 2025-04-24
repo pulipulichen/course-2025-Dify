@@ -1,0 +1,362 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: Smart_Librarian_Mini-Chatflow
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      - .MP4
+      - .MOV
+      - .MPEG
+      - .MPGA
+      allowed_file_types: []
+      allowed_file_upload_methods:
+      - remote_url
+      - local_file
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - remote_url
+        - local_file
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      configs: []
+      enabled: false
+      type: ''
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: knowledge_retrieval-llm
+      source: knowledge_retrieval
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: question-classifier
+      id: start-source-1739724767091-target
+      source: start
+      sourceHandle: source
+      target: '1739724767091'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: question-classifier
+        targetType: code
+      id: 1739724767091-2-1739724804203-target
+      source: '1739724767091'
+      sourceHandle: '2'
+      target: '1739724804203'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: code
+        targetType: variable-aggregator
+      id: 1739724804203-source-1739724894124-target
+      source: '1739724804203'
+      sourceHandle: source
+      target: '1739724894124'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: variable-aggregator
+        targetType: answer
+      id: 1739724894124-source-answer-target
+      source: '1739724894124'
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: llm
+        targetType: variable-aggregator
+      id: llm-source-1739724894124-target
+      source: llm
+      sourceHandle: source
+      target: '1739724894124'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: question-classifier
+        targetType: knowledge-retrieval
+      id: 1739724767091-1-knowledge_retrieval-target
+      source: '1739724767091'
+      sourceHandle: '1'
+      target: knowledge_retrieval
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: START
+        type: start
+        variables: []
+      height: 54
+      id: start
+      position:
+        x: 30
+        y: 288
+      positionAbsolute:
+        x: 30
+        y: 288
+      selected: false
+      type: custom
+      width: 244
+    - data:
+        dataset_ids:
+        - 46e218fb-f700-4173-9590-ce411f0a0972
+        multiple_retrieval_config:
+          reranking_enable: true
+          reranking_mode: weighted_score
+          reranking_model:
+            model: ''
+            provider: ''
+          score_threshold: null
+          top_k: 10
+          weights:
+            keyword_setting:
+              keyword_weight: 0.3
+            vector_setting:
+              embedding_model_name: intfloat/multilingual-e5-large
+              embedding_provider_name: huggingface_hub
+              vector_weight: 0.7
+        query_variable_selector:
+        - sys
+        - query
+        retrieval_mode: multiple
+        selected: false
+        single_retrieval_config: null
+        title: KNOWLEDGE RETRIEVAL
+        type: knowledge-retrieval
+      height: 92
+      id: knowledge_retrieval
+      position:
+        x: 638
+        y: 404
+      positionAbsolute:
+        x: 638
+        y: 404
+      selected: false
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - knowledge_retrieval
+          - result
+        memory:
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+        model:
+          completion_params:
+            stop: []
+          mode: chat
+          name: gemini-2.0-flash-exp
+          provider: google
+        prompt_template:
+        - id: b2b2bd1f-ba83-4852-abea-f6956fa079f7
+          role: user
+          text: 'Use the following context as your learned knowledge, inside <context></context>
+            XML tags.
+
+
+            <context>
+
+            {{#context#}}
+
+            </context>
+
+
+            When answer to user:
+
+            - If you don''t know, just say that you don''t know.
+
+            - If you don''t know when you are not sure, ask for clarification.
+
+            Avoid mentioning that you obtained the information from the context.
+
+            And answer according to the language of the user''s question.
+
+
+            您是館員，請根據<context></context>的內容，回答讀者的問題。
+
+            '
+        selected: false
+        title: LLM
+        type: llm
+        vision:
+          configs: null
+          enabled: false
+          variable_selector: null
+      height: 98
+      id: llm
+      position:
+        x: 942
+        y: 404
+      positionAbsolute:
+        x: 942
+        y: 404
+      selected: false
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1739724894124.output#}}'
+        selected: false
+        title: ANSWER
+        type: answer
+      height: 103
+      id: answer
+      position:
+        x: 1550
+        y: 288
+      positionAbsolute:
+        x: 1550
+        y: 288
+      selected: false
+      type: custom
+      width: 244
+    - data:
+        classes:
+        - id: '1'
+          name: 來詢問圖書館的業務
+        - id: '2'
+          name: 來閒聊的
+        desc: ''
+        instruction: ''
+        instructions: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-1.5-pro-latest
+          provider: google
+        query_variable_selector:
+        - start
+        - sys.query
+        selected: false
+        title: Question Classifier
+        topics: []
+        type: question-classifier
+        vision:
+          enabled: false
+      height: 176
+      id: '1739724767091'
+      position:
+        x: 334
+        y: 288
+      positionAbsolute:
+        x: 334
+        y: 288
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "\ndef main() -> dict:\n    return {\n        \"result\": \"不在智慧館員的回答範圍內。\"\
+          ,\n    }\n"
+        code_language: python3
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: true
+        title: Code
+        type: code
+        variables: []
+      height: 54
+      id: '1739724804203'
+      position:
+        x: 942
+        y: 310
+      positionAbsolute:
+        x: 942
+        y: 310
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        output_type: string
+        selected: false
+        title: Variable Aggregator
+        type: variable-aggregator
+        variables:
+        - - '1739724804203'
+          - result
+        - - llm
+          - text
+      height: 130
+      id: '1739724894124'
+      position:
+        x: 1239.3906968286396
+        y: 288
+      positionAbsolute:
+        x: 1239.3906968286396
+        y: 288
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -635.4079870965156
+      y: -106.96083230817408
+      zoom: 0.9763205664452845

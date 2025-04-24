@@ -1,0 +1,4 @@
+include:
+  - path:
+    - dify/docker/docker-compose.yaml
+    - cloudflare-dify/docker-compose.yml

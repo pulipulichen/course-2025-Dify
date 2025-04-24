@@ -1,0 +1,279 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: advanced-chat
+  name: Site_Answer-Chatflow
+  use_icon_as_answer_icon: false
+kind: app
+version: 0.1.5
+workflow:
+  conversation_variables: []
+  environment_variables:
+  - description: ''
+    id: 1cc80891-e344-455f-85c4-d063485821b2
+    name: site
+    selector:
+    - env
+    - site
+    value: ndltd.ncl.edu.tw
+    value_type: string
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        sourceType: llm
+        targetType: answer
+      id: llm-answer
+      source: llm
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+    - data:
+        isInIteration: false
+        sourceType: start
+        targetType: tool
+      id: 1739726325386-source-1739726336591-target
+      source: '1739726325386'
+      sourceHandle: source
+      target: '1739726336591'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: tool
+        targetType: code
+      id: 1739726336591-source-1739726529201-target
+      source: '1739726336591'
+      sourceHandle: source
+      target: '1739726529201'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        sourceType: code
+        targetType: llm
+      id: 1739726529201-source-llm-target
+      source: '1739726529201'
+      sourceHandle: source
+      target: llm
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: Start
+        type: start
+        variables: []
+      height: 54
+      id: '1739726325386'
+      position:
+        x: 30
+        y: 251.5
+      positionAbsolute:
+        x: 30
+        y: 251.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 10
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gemini-2.0-flash-exp
+          provider: google
+        prompt_template:
+        - id: 6fa96e1f-5cbb-474a-b26e-cc7515bc7090
+          role: system
+          text: 'Use the following context as your learned knowledge, inside <context></context>
+            XML tags.
+
+
+            <context>
+
+            {{#1739726529201.result#}}
+
+            </context>
+
+
+            When answer to user:
+
+            - If you don''t know, just say that you don''t know.
+
+            - If you don''t know when you are not sure, ask for clarification.
+
+            Avoid mentioning that you obtained the information from the context.
+
+            And answer according to the language of the user''s question.
+
+
+            您是部落格的作者，請根據<context></context>的內容，回答讀者的問題。
+
+            '
+        selected: false
+        title: LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 98
+      id: llm
+      position:
+        x: 942
+        y: 251.5
+      positionAbsolute:
+        x: 942
+        y: 251.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#llm.text#}}'
+        desc: ''
+        selected: false
+        title: Answer
+        type: answer
+        variables: []
+      height: 103
+      id: answer
+      position:
+        x: 1246
+        y: 251.5
+      positionAbsolute:
+        x: 1246
+        y: 251.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        provider_id: google
+        provider_name: google
+        provider_type: builtin
+        selected: false
+        title: GoogleSearch
+        tool_configurations: {}
+        tool_label: GoogleSearch
+        tool_name: google_search
+        tool_parameters:
+          query:
+            type: mixed
+            value: '{{#sys.query#}} site:{{#env.site#}}'
+        type: tool
+      height: 54
+      id: '1739726336591'
+      position:
+        x: 334
+        y: 251.5
+      positionAbsolute:
+        x: 334
+        y: 251.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "\nfunction main({json}) {\n    json = json[0].organic_results\n   \
+          \ if (!json) {\n        json = []\n    }\n\n    return {\n        result:\
+          \ json.map(item => {\n            let output = Object.keys(item).map(key\
+          \ => {\n                return `${key}: ${item[key]}`\n            })\n\
+          \            \n            return output.join('\\n')\n        }).join('\\\
+          n\\n')\n    }\n}\n"
+        code_language: javascript
+        desc: ''
+        outputs:
+          result:
+            children: null
+            type: string
+        selected: true
+        title: Code
+        type: code
+        variables:
+        - value_selector:
+          - '1739726336591'
+          - json
+          variable: json
+      height: 54
+      id: '1739726529201'
+      position:
+        x: 638
+        y: 251.5
+      positionAbsolute:
+        x: 638
+        y: 251.5
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -145.60000000000002
+      y: -13.599999999999966
+      zoom: 0.7
