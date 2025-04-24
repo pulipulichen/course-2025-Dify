@@ -6,4 +6,5 @@ cd "$base_dir"
 
 ./stop.sh
 
-sudo rm -rf dify/docker/volumes
+sudo rm -rf dify-docker/volumes/app/storage*
+sudo rm -rf dify-docker/volumes/db/data*

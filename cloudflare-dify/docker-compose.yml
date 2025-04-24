@@ -1,7 +1,5 @@
-version: '3.5'
 services:
   cloudflare_dify:
-    image: pudding/docker-app:docker-cloudflare-tunnel-app-20250215.024625
-    # entrypoint: ["/cloudflared", "--url", "http://dify2openai:3000"]
-    entrypoint: ["/cloudflared", "--url", "http://nginx"]
-    
+    image: pudding/docker-app:docker-cloudflare-tunnel-app-20250425.045953
+    environment:
+      - TARGET_URL=http://nginx

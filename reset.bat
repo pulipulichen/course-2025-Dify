@@ -9,6 +9,7 @@ REM 執行 stop.sh（需要有 WSL 或 Git Bash 支援，否則這行會失敗�
 call stop.bat
 
 REM 刪除 dify/docker/volumes 資料夾
-rmdir /s /q "dify\docker\volumes"
+rmdir /s /q "dify\docker\volumes\app\storage"
+rmdir /s /q "dify\docker\volumes\db\data"
 
 endlocal

@@ -16,10 +16,10 @@ call stop.bat
 
 :: Run Docker Compose with multiple env files and compose files
 docker-compose^
-  --env-file ./dify/docker/.env.example^
+  --env-file ./dify-docker/.env.example^
   --env-file ./default.env^
   --env-file .env^
-  -f ./dify/docker/docker-compose.yaml^
+  -f ./dify-docker/docker-compose.yaml^
   -f ./cloudflare-dify/docker-compose.yml^
   up --build
 
