@@ -10,6 +10,9 @@ URL=https://raw.githubusercontent.com/langgenius/dify/refs/heads/main/docker/doc
 
 curl -o docker-compose.yaml $URL
 
+# Remove all 'restart: always' from docker-compose.yaml
+sed -i '/restart: always/d' docker-compose.yaml
+
 # Add the prompts.py volume mount to docker-compose.yaml
 sed -i '/- \.\/volumes\/app\/storage:\/app\/api\/storage/a\      - \.\/prompts\.py:\/app\/api\/core\/llm_generator\/prompts\.py' docker-compose.yaml
 
